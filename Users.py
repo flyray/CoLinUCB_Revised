@@ -1,59 +1,60 @@
-import numpy as np 
+import numpy as np
 from util_functions import featureUniform, gaussianFeature, fileOverWriteWarning
 import json
 from random import choice, randint
 
+
 class User():
-	def __init__(self, id, theta = None, CoTheta = None):
-		self.id = id
-		self.theta = theta
-		self.CoTheta = CoTheta
-		self.uncertainty = 0.0
-	def updateUncertainty(uncertainty):
-		self.uncertainty = uncertainty
+    def __init__(self, id, theta=None, CoTheta=None):
+        self.id = id
+        self.theta = theta
+        self.CoTheta = CoTheta
+        self.uncertainty = 0.0
+
+    def updateUncertainty(self, uncertainty):  # 修改添加了 self
+        self.uncertainty = uncertainty
 
 
 class UserManager():
-	def __init__(self, dimension, userNum,  UserGroups, thetaFunc, argv = None):
-		self.dimension = dimension
-		self.thetaFunc = thetaFunc
-		self.userNum = userNum
-		self.UserGroups = UserGroups
-		self.argv = argv
-		self.signature = "A-"+"+PA"+"+TF-"+self.thetaFunc.__name__
+    def __init__(self, dimension, userNum, UserGroups, thetaFunc, argv=None):
+        self.dimension = dimension
+        self.thetaFunc = thetaFunc
+        self.userNum = userNum
+        self.UserGroups = UserGroups
+        self.argv = argv
+        self.signature = "A-" + "+PA" + "+TF-" + self.thetaFunc.__name__
 
-	def saveUsers(self, users, filename, force = False):
-		fileOverWriteWarning(filename, force)
-		with open(filename, 'w') as f:
-			for i in range(len(users)):
-				print users[i].theta
-				f.write(json.dumps((users[i].id, users[i].theta.tolist())) + '\n')
-				
-	def loadUsers(self, filename):
-		users = []
-		with open(filename, 'r') as f:
-			for line in f:
-				id, theta = json.loads(line)
-				users.append(User(id, np.array(theta)))
-		return users
+    def saveUsers(self, users, filename, force=False):
+        fileOverWriteWarning(filename, force)
+        with open(filename, 'w') as f:
+            for i in range(len(users)):
+                print users[i].theta
+                f.write(json.dumps((users[i].id, users[i].theta.tolist())) + '\n')
 
-	def generateMasks(self):
-		mask = {}
-		for i in range(self.UserGroups):
-			mask[i] = np.random.randint(2, size = self.dimension)
-		return mask
+    def loadUsers(self, filename):
+        users = []
+        with open(filename, 'r') as f:
+            for line in f:
+                id, theta = json.loads(line)
+                users.append(User(id, np.array(theta)))
+        return users
 
-	def simulateThetafromUsers(self):
-		usersids = {}
-		users = []
-		mask = self.generateMasks()
+    def generateMasks(self):
+        mask = {}
+        for i in range(self.UserGroups):
+            mask[i] = np.random.randint(2, size=self.dimension)
+        return mask
 
-		for i in range(self.UserGroups):
-			usersids[i] = range(self.userNum*i/self.UserGroups, (self.userNum*(i+1))/self.UserGroups)
+    def simulateThetafromUsers(self):
+        usersids = {}
+        users = []
+        mask = self.generateMasks()
 
-			for key in usersids[i]:
-				thetaVector = np.multiply(self.thetaFunc(self.dimension, argv = self.argv), mask[i])
-				l2_norm = np.linalg.norm(thetaVector, ord =2)
-				users.append(User(key, thetaVector/l2_norm))
-		return users
+        for i in range(self.UserGroups):
+            usersids[i] = range(self.userNum * i / self.UserGroups, (self.userNum * (i + 1)) / self.UserGroups)
 
+            for key in usersids[i]:
+                thetaVector = np.multiply(self.thetaFunc(self.dimension, argv=self.argv), mask[i])
+                l2_norm = np.linalg.norm(thetaVector, ord=2)
+                users.append(User(key, thetaVector / l2_norm))
+        return users
