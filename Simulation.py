@@ -1,9 +1,11 @@
 import numpy as np
 from operator import itemgetter  # for easiness in sorting and finding max and stuff
-from matplotlib.pylab import *
 import matplotlib
 
-matplotlib.use('Agg')
+matplotlib.use('Agg')  # This function must be called *before* importing pyplot for the first time
+
+from matplotlib.pylab import *
+
 from random import sample, choice
 from scipy.sparse import csgraph
 import os

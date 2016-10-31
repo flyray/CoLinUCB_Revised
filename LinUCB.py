@@ -43,7 +43,7 @@ class Hybrid_LinUCB_singleUserStruct(LinUCBUserStruct):
         LinUCBUserStruct.__init__(self, len(userFeature), userID, lambda_, RankoneInverse)
         self.d = len(userFeature)
 
-        self.B = np.zeros([self.d, self.d ** 2])
+        self.B = np.zeros([self.d, self.d ** 2])  # ** is n-th power
         self.userFeature = userFeature
 
     def updateParameters(self, articlePicked, click):
