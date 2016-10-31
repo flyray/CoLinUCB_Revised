@@ -351,10 +351,13 @@ class simulateOnlineData():
 				'''
         # plot the results
         # showheatmap(self.W.T)
+
+        '''
         for alg_name, alg in algorithms.items():
             # alg.showLearntWheatmap()
             print alg_name, ConnectionDiff(self.W, alg.getWholeW())
             print alg.getWholeW()
+        '''
 
         f, axa = plt.subplots(2, sharex=True)
         for alg_name, alg in algorithms.items():
@@ -406,7 +409,7 @@ class simulateOnlineData():
 
 if __name__ == '__main__':
     iterations = 200
-    NoiseScale = .1
+    NoiseScale = 0.1
     matrixNoise = 0.3
 
     dimension = 5
